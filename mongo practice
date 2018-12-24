@@ -1,0 +1,1074 @@
+
+synerzip@ULTP-788:~$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+Executing: /tmp/apt-key-gpghome.ssOoo4x47Q/gpg.1.sh --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+gpg: key 68818C72E52529D4: "MongoDB 4.0 Release Signing Key <packaging@mongodb.com>" not changed
+gpg: Total number processed: 1
+gpg:              unchanged: 1
+
+
+
+synerzip@ULTP-788:~$ echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse
+
+
+
+
+synerzip@ULTP-788:~$ sudo apt-get update
+Hit:1 https://deb.nodesource.com/node_10.x bionic InRelease
+Ign:2 https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 InRelease     
+Get:3 https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 Release [2,029 B]
+
+Hit:14 http://in.archive.ubuntu.com/ubuntu bionic-backports InRelease
+Fetched 7,506 B in 6s (1,160 B/s)                                              
+Reading package lists... Done
+
+
+
+synerzip@ULTP-788:~$ sudo apt-get install -y mongodb-org
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following packages were automatically installed and are no longer required:
+  linux-headers-generic-hwe-16.04 linux-image-generic-hwe-16.04
+Use 'sudo apt autoremove' to remove them.
+The following additional packages will be installed:
+  mongodb-org-mongos mongodb-org-server mongodb-org-shell mongodb-org-tools
+The following NEW packages will be installed:
+  mongodb-org mongodb-org-mongos mongodb-org-server mongodb-org-shell
+  mongodb-org-tools
+0 upgraded, 5 newly installed, 0 to remove and 79 not upgraded.
+Need to get 58.2 MB of archives.
+After this operation, 251 MB of additional disk space will be used.
+Get:1 https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0/multiverse amd64 mongodb-org-shell amd64 4.0.5 [9,795 kB]
+Get:2 https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0/multiverse amd64 mongodb-org-server amd64 4.0.5 [15.7 MB]
+
+Done.
+Adding user `mongodb' to group `mongodb' ...
+Adding user mongodb to group mongodb
+Done.
+Setting up mongodb-org (4.0.5) ...
+
+
+
+synerzip@ULTP-788:~$ sudo service mongod start
+
+
+
+synerzip@ULTP-788:~$ mongo
+MongoDB shell version v4.0.5
+connecting to: mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("e7f08635-34f5-4caf-8f7c-960f7a193743") }
+MongoDB server version: 4.0.5
+Welcome to the MongoDB shell.
+For interactive help, type "help".
+For more comprehensive documentation, see
+	http://docs.mongodb.org/
+Questions? Try the support group
+	http://groups.google.com/group/mongodb-user
+Server has startup warnings: 
+2018-12-20T11:54:50.331+0530 I STORAGE  [initandlisten] 
+2018-12-20T11:54:50.331+0530 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2018-12-20T11:54:50.331+0530 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] 
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] 
+---
+Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+and anyone you share the URL with. MongoDB may use this information to make product
+improvements and to suggest MongoDB products and deployment options to you.
+
+To enable free monitoring, run the following command: db.enableFreeMonitoring()
+To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+
+
+
+
+> show databases;
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+
+
+
+
+> db
+test
+
+
+
+> use mydb
+switched to db mydb
+
+
+
+> db
+mydb
+
+
+
+> db.col1.insertOne( { k: 1 } );
+{
+	"acknowledged" : true,
+	"insertedId" : ObjectId("5c1b395e796248006a16ef66")
+}
+
+
+
+
+
+
+> db.getCollection("col1").find()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+
+
+
+
+
+
+
+> db.col1.insertMany([{ item: "journal", qty: 25, status: "A",
+...        size: { h: 14, w: 21, uom: "cm" }, tags: [ "blank", "red" ] },
+...    { item: "notebook", qty: 50, status: "A",
+...        size: { h: 8.5, w: 11, uom: "in" }, tags: [ "red", "blank" ] },
+...    { item: "paper", qty: 100, status: "D",
+...        size: { h: 8.5, w: 11, uom: "in" }, tags: [ "red", "blank", "plain" ] },
+...    { item: "planner", qty: 75, status: "D",
+...        size: { h: 22.85, w: 30, uom: "cm" }, tags: [ "blank", "red" ] },
+...    { item: "postcard", qty: 45, status: "A",
+...        size: { h: 10, w: 15.25, uom: "cm" }, tags: [ "blue" ] }
+... ]);
+{
+	"acknowledged" : true,
+	"insertedIds" : [
+		ObjectId("5c1b3a6a796248006a16ef67"),
+		ObjectId("5c1b3a6a796248006a16ef68"),
+		ObjectId("5c1b3a6a796248006a16ef69"),
+		ObjectId("5c1b3a6a796248006a16ef6a"),
+		ObjectId("5c1b3a6a796248006a16ef6b")
+	]
+}
+
+
+
+
+
+> db.getCollection("col1").find()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A", "size" : { "h" : 14, "w" : 21, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef69"), "item" : "paper", "qty" : 100, "status" : "D", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank", "plain" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D", "size" : { "h" : 22.85, "w" : 30, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6b"), "item" : "postcard", "qty" : 45, "status" : "A", "size" : { "h" : 10, "w" : 15.25, "uom" : "cm" }, "tags" : [ "blue" ] }
+
+
+
+
+
+
+> db.col1.find()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A", "size" : { "h" : 14, "w" : 21, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef69"), "item" : "paper", "qty" : 100, "status" : "D", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank", "plain" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D", "size" : { "h" : 22.85, "w" : 30, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6b"), "item" : "postcard", "qty" : 45, "status" : "A", "size" : { "h" : 10, "w" : 15.25, "uom" : "cm" }, "tags" : [ "blue" ] }
+
+
+
+
+
+> db.col1.find( { tags: "red" } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A", "size" : { "h" : 14, "w" : 21, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef69"), "item" : "paper", "qty" : 100, "status" : "D", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank", "plain" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D", "size" : { "h" : 22.85, "w" : 30, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+> db.col1.find( { tags: ["red", "blank"] } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+
+
+
+
+
+
+> db.col1.countDocuments({})
+6
+
+
+
+
+> db.col1.estimatedDocumentCount({})
+6
+
+
+
+
+> db.col1.find( { status: "A" } ).count()
+3
+
+
+
+
+> show collections;
+col1
+
+
+
+
+> db.col1.distinct( "item" )
+[ "journal", "notebook", "paper", "planner", "postcard" ]
+
+
+
+
+
+> db.col1.distinct( "size.w" )
+[ 21, 11, 30, 15.25 ]
+
+
+
+
+
+> db.collection.isCapped()
+false
+
+
+
+
+> db.col1.distinct("size.w",{item: "paper"})
+[ 11 ]
+
+
+
+
+> db.createCollection( "capcol", { capped: true, size: 100000 } )
+{ "ok" : 1 }
+
+
+
+
+> show collections;
+capcol
+col1
+
+
+
+
+
+> db.capcol.isCapped()
+true
+
+
+
+
+> db.col1.find().pretty()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef67"),
+	"item" : "journal",
+	"qty" : 25,
+	"status" : "A",
+	"size" : {
+		"h" : 14,
+		"w" : 21,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef68"),
+	"item" : "notebook",
+	"qty" : 50,
+	"status" : "A",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef69"),
+	"item" : "paper",
+	"qty" : 100,
+	"status" : "D",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank",
+		"plain"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6a"),
+	"item" : "planner",
+	"qty" : 75,
+	"status" : "D",
+	"size" : {
+		"h" : 22.85,
+		"w" : 30,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6b"),
+	"item" : "postcard",
+	"qty" : 45,
+	"status" : "A",
+	"size" : {
+		"h" : 10,
+		"w" : 15.25,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blue"
+	]
+}
+
+
+
+
+
+
+
+> show logs;
+global
+startupWarnings
+
+
+
+
+> show log global
+2018-12-20T11:54:50.239+0530 I CONTROL  [main] Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] MongoDB starting : pid=9929 port=27017 dbpath=/var/lib/mongodb 64-bit host=ULTP-788
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] db version v4.0.5
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] git version: 3739429dd92b92d1b0ab120911a23d50bf03c412
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.1.0g  2 Nov 2017
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] allocator: tcmalloc
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] modules: none
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] build environment:
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten]     distmod: ubuntu1804
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten]     distarch: x86_64
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten]     target_arch: x86_64
+2018-12-20T11:54:50.331+0530 I CONTROL  [initandlisten] options: { config: "/etc/mongod.conf", net: { bindIp: "127.0.0.1", port: 27017 }, processManagement: { timeZoneInfo: "/usr/share/zoneinfo" }, storage: { dbPath: "/var/lib/mongodb", journal: { enabled: true } }, systemLog: { destination: "file", logAppend: true, path: "/var/log/mongodb/mongod.log" } }
+2018-12-20T11:54:50.331+0530 I STORAGE  [initandlisten] 
+2018-12-20T11:54:50.331+0530 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2018-12-20T11:54:50.331+0530 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2018-12-20T11:54:50.332+0530 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=3407M,session_max=20000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),statistics_log=(wait=0),verbose=(recovery_progress),
+2018-12-20T11:54:51.022+0530 I STORAGE  [initandlisten] WiredTiger message [1545287091:22613][9929:0x7f0e54b6ca40], txn-recover: Set global recovery timestamp: 0
+2018-12-20T11:54:51.140+0530 I RECOVERY [initandlisten] WiredTiger recoveryTimestamp. Ts: Timestamp(0, 0)
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] 
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2018-12-20T11:54:51.451+0530 I CONTROL  [initandlisten] 
+2018-12-20T11:54:51.452+0530 I STORAGE  [initandlisten] createCollection: admin.system.version with provided UUID: 065c82cf-63ba-40ea-a573-167433755040
+2018-12-20T11:54:51.621+0530 I COMMAND  [initandlisten] setting featureCompatibilityVersion to 4.0
+2018-12-20T11:54:51.632+0530 I STORAGE  [initandlisten] createCollection: local.startup_log with generated UUID: 32c61830-8c22-4ba3-b928-7cdc28109b0a
+2018-12-20T11:54:51.779+0530 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '/var/lib/mongodb/diagnostic.data'
+2018-12-20T11:54:51.783+0530 I NETWORK  [initandlisten] waiting for connections on port 27017
+2018-12-20T11:54:51.783+0530 I STORAGE  [LogicalSessionCacheRefresh] createCollection: config.system.sessions with generated UUID: a50d7267-4f3f-485e-bce7-3040162d0c46
+2018-12-20T11:54:52.016+0530 I INDEX    [LogicalSessionCacheRefresh] build index on: config.system.sessions properties: { v: 2, key: { lastUse: 1 }, name: "lsidTTLIndex", ns: "config.system.sessions", expireAfterSeconds: 1800 }
+2018-12-20T11:54:52.016+0530 I INDEX    [LogicalSessionCacheRefresh] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+2018-12-20T11:54:52.019+0530 I INDEX    [LogicalSessionCacheRefresh] build index done.  scanned 0 total records. 0 secs
+2018-12-20T11:54:52.019+0530 I COMMAND  [LogicalSessionCacheRefresh] command config.$cmd command: createIndexes { createIndexes: "system.sessions", indexes: [ { key: { lastUse: 1 }, name: "lsidTTLIndex", expireAfterSeconds: 1800 } ], $db: "config" } numYields:0 reslen:114 locks:{ Global: { acquireCount: { r: 2, w: 2 } }, Database: { acquireCount: { w: 2, W: 1 } }, Collection: { acquireCount: { w: 2 } } } protocol:op_msg 235ms
+2018-12-20T11:54:57.558+0530 I NETWORK  [listener] connection accepted from 127.0.0.1:35848 #1 (1 connection now open)
+2018-12-20T11:54:57.578+0530 I NETWORK  [conn1] received client metadata from 127.0.0.1:35848 conn1: { application: { name: "MongoDB Shell" }, driver: { name: "MongoDB Internal Client", version: "4.0.5" }, os: { type: "Linux", name: "Ubuntu", architecture: "x86_64", version: "18.04" } }
+2018-12-20T12:10:30.707+0530 I STORAGE  [conn1] createCollection: mydb.col1 with generated UUID: 1e31acfc-83c0-437d-9acd-ba31ce46152a
+2018-12-20T12:10:30.984+0530 I COMMAND  [conn1] command mydb.col1 appName: "MongoDB Shell" command: insert { insert: "col1", ordered: true, lsid: { id: UUID("e7f08635-34f5-4caf-8f7c-960f7a193743") }, $db: "mydb" } ninserted:1 keysInserted:1 numYields:0 reslen:45 locks:{ Global: { acquireCount: { r: 3, w: 3 } }, Database: { acquireCount: { w: 2, W: 1 } }, Collection: { acquireCount: { w: 2 } } } protocol:op_msg 277ms
+2018-12-20T13:12:34.919+0530 I STORAGE  [conn1] createCollection: mydb.capcol with generated UUID: c757f95f-8ce7-4b88-b0d3-9607daa6eb5d
+2018-12-20T13:12:35.107+0530 I COMMAND  [conn1] command mydb.capcol appName: "MongoDB Shell" command: create { create: "capcol", capped: true, size: 100000.0, lsid: { id: UUID("e7f08635-34f5-4caf-8f7c-960f7a193743") }, $db: "mydb" } numYields:0 reslen:38 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_msg 187ms
+
+
+
+
+
+
+
+> show roles
+{
+	"role" : "dbAdmin",
+	"db" : "mydb",
+	"isBuiltin" : true,
+	"roles" : [ ],
+	"inheritedRoles" : [ ]
+}
+{
+	"role" : "dbOwner",
+	"db" : "mydb",
+	"isBuiltin" : true,
+	"roles" : [ ],
+	"inheritedRoles" : [ ]
+}
+{
+	"role" : "enableSharding",
+	"db" : "mydb",
+	"isBuiltin" : true,
+	"roles" : [ ],
+	"inheritedRoles" : [ ]
+}
+{
+	"role" : "read",
+	"db" : "mydb",
+	"isBuiltin" : true,
+	"roles" : [ ],
+	"inheritedRoles" : [ ]
+}
+{
+	"role" : "readWrite",
+	"db" : "mydb",
+	"isBuiltin" : true,
+	"roles" : [ ],
+	"inheritedRoles" : [ ]
+}
+{
+	"role" : "userAdmin",
+	"db" : "mydb",
+	"isBuiltin" : true,
+	"roles" : [ ],
+	"inheritedRoles" : [ ]
+}
+
+
+
+
+
+
+
+
+
+
+> show profile
+db.system.profile is empty
+Use db.setProfilingLevel(2) will enable profiling
+Use db.system.profile.find() to show raw profile entries
+
+
+> db.system.profile.find()
+
+
+
+
+
+
+> db.col1.update({ item: "postcard" },{ item : "mypostcard" ,qty : 450 })
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+
+
+
+> db.col1.find().pretty()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef67"),
+	"item" : "journal",
+	"qty" : 25,
+	"status" : "A",
+	"size" : {
+		"h" : 14,
+		"w" : 21,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef68"),
+	"item" : "notebook",
+	"qty" : 50,
+	"status" : "A",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef69"),
+	"item" : "paper",
+	"qty" : 100,
+	"status" : "D",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank",
+		"plain"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6a"),
+	"item" : "planner",
+	"qty" : 75,
+	"status" : "D",
+	"size" : {
+		"h" : 22.85,
+		"w" : 30,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6b"),
+	"item" : "mypostcard",
+	"qty" : 450
+}
+> 
+
+
+
+___________________________________________________
+
+
+
+synerzip@ULTP-788:~$ sudo service mongod start
+[sudo] password for synerzip: 
+
+
+
+synerzip@ULTP-788:~$ mongo
+MongoDB shell version v4.0.5
+connecting to: mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("eabac7e0-da51-49f4-a559-a7313fe51d9f") }
+MongoDB server version: 4.0.5
+Server has startup warnings: 
+2018-12-21T09:46:37.816+0530 I STORAGE  [initandlisten] 
+2018-12-21T09:46:37.816+0530 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2018-12-21T09:46:37.816+0530 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2018-12-21T09:46:39.531+0530 I CONTROL  [initandlisten] 
+2018-12-21T09:46:39.531+0530 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2018-12-21T09:46:39.531+0530 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2018-12-21T09:46:39.531+0530 I CONTROL  [initandlisten] 
+---
+Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+and anyone you share the URL with. MongoDB may use this information to make product
+improvements and to suggest MongoDB products and deployment options to you.
+
+To enable free monitoring, run the following command: db.enableFreeMonitoring()
+To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+---
+
+
+
+
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+mydb    0.000GB
+
+
+
+
+> use mydb
+switched to db mydb
+
+
+
+> show collections
+capcol
+col1
+
+
+
+> db.col1.find().pretty()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef67"),
+	"item" : "journal",
+	"qty" : 25,
+	"status" : "A",
+	"size" : {
+		"h" : 14,
+		"w" : 21,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef68"),
+	"item" : "notebook",
+	"qty" : 50,
+	"status" : "A",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef69"),
+	"item" : "paper",
+	"qty" : 100,
+	"status" : "D",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank",
+		"plain"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6a"),
+	"item" : "planner",
+	"qty" : 75,
+	"status" : "D",
+	"size" : {
+		"h" : 22.85,
+		"w" : 30,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6b"),
+	"item" : "mypostcard",
+	"qty" : 450
+}
+
+
+
+
+
+> db.col1.find( { status: "A", qty: { $lt: 30 } } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A", "size" : { "h" : 14, "w" : 21, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+
+
+
+
+> db.col1.find( { "size.uom": "in" } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef69"), "item" : "paper", "qty" : 100, "status" : "D", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank", "plain" ] }
+
+
+
+
+
+> db.col1.find( { "size.h": { $lt: 15 }, "size.uom": "in", status: "D" } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef69"), "item" : "paper", "qty" : 100, "status" : "D", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank", "plain" ] }
+
+
+
+
+> db.col1.find( { tags: ["red", "blank"] } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+
+
+
+> db.col1.find( { tags: { $all: ["red", "blank"] } } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A", "size" : { "h" : 14, "w" : 21, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef69"), "item" : "paper", "qty" : 100, "status" : "D", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank", "plain" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D", "size" : { "h" : 22.85, "w" : 30, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+
+
+
+
+
+> db.col1.find( { item: null } )
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+
+
+
+
+
+> db.col1.find().pretty()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef67"),
+	"item" : "journal",
+	"qty" : 25,
+	"status" : "A",
+	"size" : {
+		"h" : 14,
+		"w" : 21,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef68"),
+	"item" : "notebook",
+	"qty" : 50,
+	"status" : "A",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef69"),
+	"item" : "paper",
+	"qty" : 100,
+	"status" : "D",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank",
+		"plain"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6a"),
+	"item" : "planner",
+	"qty" : 75,
+	"status" : "D",
+	"size" : {
+		"h" : 22.85,
+		"w" : 30,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6b"),
+	"item" : "mypostcard",
+	"qty" : 450
+}
+
+
+
+
+
+
+
+
+
+> db.col1.deleteOne( { status: "D" } )
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+
+
+
+
+> db.col1.find().pretty()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef67"),
+	"item" : "journal",
+	"qty" : 25,
+	"status" : "A",
+	"size" : {
+		"h" : 14,
+		"w" : 21,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef68"),
+	"item" : "notebook",
+	"qty" : 50,
+	"status" : "A",
+	"size" : {
+		"h" : 8.5,
+		"w" : 11,
+		"uom" : "in"
+	},
+	"tags" : [
+		"red",
+		"blank"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6a"),
+	"item" : "planner",
+	"qty" : 75,
+	"status" : "D",
+	"size" : {
+		"h" : 22.85,
+		"w" : 30,
+		"uom" : "cm"
+	},
+	"tags" : [
+		"blank",
+		"red"
+	]
+}
+{
+	"_id" : ObjectId("5c1b3a6a796248006a16ef6b"),
+	"item" : "mypostcard",
+	"qty" : 450
+}
+
+
+
+
+
+
+
+> db.col1.findOne()
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+
+
+
+
+
+> db.currentOp()
+{
+	"inprog" : [
+		{
+			"host" : "ULTP-788:27017",
+			"desc" : "conn1",
+			"connectionId" : 1,
+			"client" : "127.0.0.1:42974",
+			"appName" : "MongoDB Shell",
+			"clientMetadata" : {
+				"application" : {
+					"name" : "MongoDB Shell"
+				},
+				"driver" : {
+					"name" : "MongoDB Internal Client",
+					"version" : "4.0.5"
+				},
+				"os" : {
+					"type" : "Linux",
+					"name" : "Ubuntu",
+					"architecture" : "x86_64",
+					"version" : "18.04"
+				}
+			},
+			"active" : true,
+			"currentOpTime" : "2018-12-21T12:26:13.610+0530",
+			"opid" : 10654,
+			"lsid" : {
+				"id" : UUID("eabac7e0-da51-49f4-a559-a7313fe51d9f"),
+				"uid" : BinData(0,"47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=")
+			},
+			"secs_running" : NumberLong(0),
+			"microsecs_running" : NumberLong(35317),
+			"op" : "command",
+			"ns" : "admin.$cmd.aggregate",
+			"command" : {
+				"currentOp" : 1,
+				"lsid" : {
+					"id" : UUID("eabac7e0-da51-49f4-a559-a7313fe51d9f")
+				},
+				"$db" : "admin"
+			},
+			"numYields" : 0,
+			"locks" : {
+				
+			},
+			"waitingForLock" : false,
+			"lockStats" : {
+				
+			}
+		}
+	],
+	"ok" : 1
+}
+
+
+
+
+
+
+
+
+> db.col1.find().sort( { item : -1 } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D", "size" : { "h" : 22.85, "w" : 30, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6b"), "item" : "mypostcard", "qty" : 450 }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A", "size" : { "h" : 14, "w" : 21, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+
+
+
+
+
+
+
+
+> db.col1.find().sort( { item : 1 } )
+{ "_id" : ObjectId("5c1b395e796248006a16ef66"), "k" : 1 }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A", "size" : { "h" : 14, "w" : 21, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6b"), "item" : "mypostcard", "qty" : 450 }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D", "size" : { "h" : 22.85, "w" : 30, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+
+
+
+
+
+
+> db.col1.find().sort( { item : -1 } ).limit(2)
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D", "size" : { "h" : 22.85, "w" : 30, "uom" : "cm" }, "tags" : [ "blank", "red" ] }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+
+
+
+
+
+> db.col1.find( {}, { item : 1 , qty : 1 , status : 1 } ).sort( { item : -1 } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6a"), "item" : "planner", "qty" : 75, "status" : "D" }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A" }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef6b"), "item" : "mypostcard", "qty" : 450 }
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef67"), "item" : "journal", "qty" : 25, "status" : "A" }
+{ "_id" : ObjectId("5c1b395e796248006a16ef66") }
+
+
+
+
+
+
+> db.col1.find( { qty: { $gte: 30, $lte: 60 } } )
+{ "_id" : ObjectId("5c1b3a6a796248006a16ef68"), "item" : "notebook", "qty" : 50, "status" : "A", "size" : { "h" : 8.5, "w" : 11, "uom" : "in" }, "tags" : [ "red", "blank" ] }
+
+
+
+
+
+
+
+
+
+> db.col1.find( { qty: { $gte: 30, $lte: 60 } } ).explain("executionStats")
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "mydb.col1",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"$and" : [
+				{
+					"qty" : {
+						"$lte" : 60
+					}
+				},
+				{
+					"qty" : {
+						"$gte" : 30
+					}
+				}
+			]
+		},
+		"winningPlan" : {
+			"stage" : "COLLSCAN",
+			"filter" : {
+				"$and" : [
+					{
+						"qty" : {
+							"$lte" : 60
+						}
+					},
+					{
+						"qty" : {
+							"$gte" : 30
+						}
+					}
+				]
+			},
+			"direction" : "forward"
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 1,
+		"executionTimeMillis" : 0,
+		"totalKeysExamined" : 0,
+		"totalDocsExamined" : 5,
+		"executionStages" : {
+			"stage" : "COLLSCAN",
+			"filter" : {
+				"$and" : [
+					{
+						"qty" : {
+							"$lte" : 60
+						}
+					},
+					{
+						"qty" : {
+							"$gte" : 30
+						}
+					}
+				]
+			},
+			"nReturned" : 1,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 7,
+			"advanced" : 1,
+			"needTime" : 5,
+			"needYield" : 0,
+			"saveState" : 0,
+			"restoreState" : 0,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"direction" : "forward",
+			"docsExamined" : 5
+		}
+	},
+	"serverInfo" : {
+		"host" : "ULTP-788",
+		"port" : 27017,
+		"version" : "4.0.5",
+		"gitVersion" : "3739429dd92b92d1b0ab120911a23d50bf03c412"
+	},
+	"ok" : 1
+}
+
